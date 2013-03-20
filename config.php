@@ -190,3 +190,5 @@ $THEME->javascripts_footer = array(
 	'foundation/responsive-tables/responsive-tables',
 	'call'
 );
+
+$THEME->doctype = 'html5';
