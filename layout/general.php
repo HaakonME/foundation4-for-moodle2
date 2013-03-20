@@ -71,7 +71,7 @@ echo $OUTPUT->doctype(); ?>
 	    <?php } ?>
 	<?php } ?>
 	<div class="row">
-		<section id="region-main" class="<?php if ($showsidepre) { echo "large-9"; } else { echo "large-12"; } ?> <?php if (!right_to_left()) { echo "push-3"; } ?> columns">
+		<section id="region-main" class="<?php if ($showsidepre) { echo "large-9"; } else { echo "large-12"; } ?> <?php if (!right_to_left() && $showsidepre) { echo "push-3"; } ?> columns">
 			<div class="region-content">
 				<?php $coursecontentheader = "Course Content Header: " . $coursecontentheader; echo $coursecontentheader; ?>
             	<?php echo $OUTPUT->main_content(); ?>
