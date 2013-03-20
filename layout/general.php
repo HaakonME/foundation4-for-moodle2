@@ -63,7 +63,6 @@ echo $OUTPUT->doctype(); ?>
                 </div>
             </nav>
         <?php } ?>
-        <hr>
 		<?php if (!empty($courseheader)) { ?>
 			<header class="row">
 	           	<div id="course-header" class="<?php if ($showsidepre) { echo "large-9 large-offset-3"; } else { echo "large-12"; } ?> columns"><?php echo $courseheader; ?></div>
@@ -94,7 +93,6 @@ echo $OUTPUT->doctype(); ?>
         </footer>
     <?php } ?>
     <?php if ($hasfooter) { ?>
-        <hr>
         <footer class="row">
         	<div id="page-footer" class="large-12 columns">
 	        	<p class="helplink"><?php echo page_doc_link(get_string('moodledocslink')) ?></p>
