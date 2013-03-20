@@ -46,11 +46,11 @@ echo $OUTPUT->doctype(); ?>
         <?php } ?>
 		<header class="row">
 	        	<?php if ($hasheading) { ?>
-	        		<div class="large-8 columns">
+	        		<div class="<?php if(right_to_left()) { echo "push-4"; } ?> large-8 columns">
 	        			<h1 class="headermain"><?php echo $PAGE->heading; ?></h1>
 	        		</div>
 	        	<?php } ?>
-	        	<div class="<?php if (!$hasheading) { echo "large-offset-8"; } ?> large-4 columns headermenu">
+	        	<div class="<?php if (!$hasheading) { echo "large-offset-8"; } ?> <?php if(right_to_left()) { echo "pull-8"; } ?> large-4 columns headermenu">
 	        		<h6 class="subheader"><?php if ($haslogininfo) { echo $OUTPUT->login_info(); } ?></h6>
 	        		<?php if (!empty($PAGE->layout_options['langmenu'])) { echo $OUTPUT->lang_menu(); } ?>
 	        		<h6 class="subheader"><?php echo $PAGE->headingmenu; ?></h6>
