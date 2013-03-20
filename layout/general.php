@@ -47,13 +47,13 @@ echo $OUTPUT->doctype(); ?>
 		<header class="row">
 	        	<?php if ($hasheading) { ?>
 	        		<div class="large-8 columns">
-	        			<h1 class="headermain"><?php echo "Page Heading: " . $PAGE->heading; ?></h1>
+	        			<h1 class="headermain"><?php echo $PAGE->heading; ?></h1>
 	        		</div>
 	        	<?php } ?>
 	        	<div class="<?php if (!$hasheading) { echo "large-offset-8"; } ?> large-4 columns headermenu">
 	        		<h6 class="subheader"><?php if ($haslogininfo) { echo $OUTPUT->login_info(); } ?></h6>
 	        		<?php if (!empty($PAGE->layout_options['langmenu'])) { echo $OUTPUT->lang_menu(); } ?>
-	        		<h6 class="subheader"><?php echo "Heading Menu: " . $PAGE->headingmenu; ?></h6>
+	        		<h6 class="subheader"><?php echo $PAGE->headingmenu; ?></h6>
 	        	</div>
 		</header>
         <?php if ($hasnavbar) { ?>
@@ -64,7 +64,7 @@ echo $OUTPUT->doctype(); ?>
             </nav>
         <?php } ?>
         <hr>
-		<?php $courseheader = "Course Header: " . $courseheader; if (!empty($courseheader)) { ?>
+		<?php if (!empty($courseheader)) { ?>
 			<header class="row">
 	           	<div id="course-header" class="<?php if ($showsidepre) { echo "large-9 large-offset-3"; } else { echo "large-12"; } ?> columns"><?php echo $courseheader; ?></div>
 	        </header>
@@ -73,9 +73,9 @@ echo $OUTPUT->doctype(); ?>
 	<div class="row">
 		<section id="region-main" class="<?php if ($showsidepre) { echo "large-9"; } else { echo "large-12"; } ?> <?php if (!right_to_left() && $showsidepre) { echo "push-3"; } ?> columns">
 			<div class="region-content">
-				<?php $coursecontentheader = "Course Content Header: " . $coursecontentheader; echo $coursecontentheader; ?>
+				<?php echo $coursecontentheader; ?>
             	<?php echo $OUTPUT->main_content(); ?>
-            	<?php $coursecontentfooter = "Course Content Footer: " . $coursecontentfooter; echo $coursecontentfooter; ?>
+            	<?php echo $coursecontentfooter; ?>
 			</div>
 		</section>
 		<?php if ($showsidepre) { ?>
@@ -86,7 +86,7 @@ echo $OUTPUT->doctype(); ?>
 			</aside>
 		<?php } ?>
 	</div>
-    <?php $coursefooter = "Course Footer: " . $coursefooter; if(!empty($coursefooter)) { ?>
+    <?php if(!empty($coursefooter)) { ?>
         <footer class="row">
         	<div id="course-footer" class="<?php if ($showsidepre) { echo "large-9 large-offset-3"; } else { echo "large-12"; } ?> columns">
         		<?php echo $coursefooter; ?>
