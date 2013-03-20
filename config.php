@@ -191,4 +191,6 @@ $THEME->javascripts_footer = array(
 	'call'
 );
 
+$THEME->rendererfactory = 'theme_overridden_renderer_factory';
+
 $THEME->doctype = 'html5';
