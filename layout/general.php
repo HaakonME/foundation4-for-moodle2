@@ -1,10 +1,12 @@
 <?php
 
+/* Instantiate some render/layout variables */
 $hasheading = ($PAGE->heading);
 $hasnavbar = (empty($PAGE->layout_options['nonavbar']) && $PAGE->has_navbar());
 $hasfooter = (empty($PAGE->layout_options['nofooter']));
 $hassidepre = (empty($PAGE->layout_options['noblocks']) && $PAGE->blocks->region_has_content('side-pre', $OUTPUT));
 $haslogininfo = (empty($PAGE->layout_options['nologininfo']));
+$haslangmenu = (!empty($PAGE->layout_options['langmenu']));
 
 $showsidepre = ($hassidepre && !$PAGE->blocks->region_completely_docked('side-pre', $OUTPUT));
 
@@ -15,29 +17,44 @@ $courseheader = $coursecontentheader = $coursecontentfooter = $coursefooter = ''
 if (empty($PAGE->layout_options['nocourseheaderfooter'])) {
     $courseheader = $OUTPUT->course_header();
     $coursecontentheader = $OUTPUT->course_content_header();
-    if (empty($PAGE->layout_options['nocoursefooter'])) {
-        $coursecontentfooter = $OUTPUT->course_content_footer();
-        $coursefooter = $OUTPUT->course_footer();
-    }
+}
+if (empty($PAGE->layout_options['nocoursefooter'])) {
+    $coursecontentfooter = $OUTPUT->course_content_footer();
+    $coursefooter = $OUTPUT->course_footer();
 }
 
 $bodyclasses = array();
-if ($showsidepre) {
-    $bodyclasses[] = 'side-pre-only';
-} else {
-    $bodyclasses[] = 'content-only';
-}
-if ($hascustommenu) {
-    $bodyclasses[] = 'has_custom_menu';
+$bodyclasses[] = ($showsidepre) ? 'side-pre-only' : 'content-only';
+$bodyclasses[] = ($hascustommenu) ? 'has_custom_menu' : null;
+$bodyclasses = $PAGE->bodyclasses . ' ' . join(' ', $bodyclasses);
+
+
+/* HTML5, yo! */
+echo $OUTPUT->doctype();
+
+/* Start the HTML tag */
+echo "<html" . $OUTPUT->htmlattributes() . ">"; // Can't use html_writer with this tag...
+
+/* Start the HEAD tag */
+echo html_writer::start_tag('head');
+
+/* Output the TITLE tag */
+echo html_writer::tag('title', $PAGE->title);
+
+/* Output apple-touch-icons and favicon */
+$size = array("144x144", "114x114", "72x72", "57x57");
+foreach ($size as $value) {
+    $icon = $OUTPUT->pix_url('foundation/favicons/apple-touch-icon-' . $value . '-precomposed', 'theme');
+    echo html_writer::empty_tag('link', array('href'=>$icon, 'rel'=>'apple-touch-icon-precomposed', 'sizes'=>$value));
 }
 
-echo $OUTPUT->doctype(); ?>
-<html <?php echo $OUTPUT->htmlattributes(); ?>>
-<head>
-    <title><?php echo $PAGE->title; ?></title>
-    <link rel="shortcut icon" href="<?php echo $OUTPUT->pix_url('favicon', 'theme'); ?>" />
-    <?php echo $OUTPUT->standard_head_html(); ?>
-</head>
+$favicon = $OUTPUT->pix_url('favicon', 'theme');
+echo html_writer::empty_tag('link', array('href'=>$favicon, 'rel'=>'icon', 'type'=>'image/x-icon'));
+
+/* Output core CSS and JS */
+echo $OUTPUT->standard_head_html();
+
+echo html_writer::end_tag('head'); ?>
 <body id="<?php p($PAGE->bodyid); ?>" class="<?php p($PAGE->bodyclasses.' '.join(' ', $bodyclasses)); ?>">
 	<?php echo $OUTPUT->standard_top_of_body_html(); ?>
 	<?php if ($hasheading || $hasnavbar || !empty($courseheader) || $hascustommenu) { ?>
@@ -52,7 +69,7 @@ echo $OUTPUT->doctype(); ?>
 	        	<?php } ?>
 	        	<div class="<?php if (!$hasheading) { echo "large-offset-8"; } ?> <?php if(right_to_left()) { echo "pull-8"; } ?> large-4 columns headermenu">
 	        		<h6 class="subheader"><?php if ($haslogininfo) { echo $OUTPUT->login_info(); } ?></h6>
-	        		<?php if (!empty($PAGE->layout_options['langmenu'])) { echo $OUTPUT->lang_menu(); } ?>
+	        		<?php if ($haslangmenu) { echo $OUTPUT->lang_menu(); } ?>
 	        		<h6 class="subheader"><?php echo $PAGE->headingmenu; ?></h6>
 	        	</div>
 		</header>
