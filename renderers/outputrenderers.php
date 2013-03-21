@@ -108,8 +108,8 @@ class theme_foundation_core_renderer extends core_renderer {
     /**
      * Renders a custom menu node as part of a submenu
      *
-     * The custom menu this method produces makes use of the YUI3 menunav widget
-     * and requires very specific html elements and classes.
+     * The custom menu this method produces makes use of the foundation
+     * top-bar element and requires specific markup and classes
      *
      * @see core:renderer::render_custom_menu()
      *
