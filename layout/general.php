@@ -77,6 +77,7 @@ echo html_writer::end_tag('head'); ?>
             <nav class="row navbar">
                 <div class="large-12 columns breadcrumb">
                 	<div class="breadcrumbs"><?php echo $OUTPUT->navbar(); echo $PAGE->button; ?></div>
+                	<hr>
                 </div>
             </nav>
         <?php } ?>
@@ -112,6 +113,7 @@ echo html_writer::end_tag('head'); ?>
     <?php if ($hasfooter) { ?>
         <footer class="row">
         	<div id="page-footer" class="large-12 columns">
+                <hr>
 	        	<p class="helplink"><?php echo page_doc_link(get_string('moodledocslink')) ?></p>
 	        	<?php
 		        echo $OUTPUT->login_info();
