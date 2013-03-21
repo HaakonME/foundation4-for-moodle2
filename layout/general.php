@@ -5,7 +5,6 @@ $hasheading = ($PAGE->heading);
 $hasnavbar = (empty($PAGE->layout_options['nonavbar']) && $PAGE->has_navbar());
 $hasfooter = (empty($PAGE->layout_options['nofooter']));
 $hassidepre = (empty($PAGE->layout_options['noblocks']) && $PAGE->blocks->region_has_content('side-pre', $OUTPUT));
-$haslogininfo = (empty($PAGE->layout_options['nologininfo']));
 $haslangmenu = (!empty($PAGE->layout_options['langmenu']));
 
 $showsidepre = ($hassidepre && !$PAGE->blocks->region_completely_docked('side-pre', $OUTPUT));
@@ -68,7 +67,6 @@ echo html_writer::end_tag('head'); ?>
 	        		</div>
 	        	<?php } ?>
 	        	<div class="<?php if (!$hasheading) { echo "large-offset-8"; } ?> <?php if(right_to_left()) { echo "pull-8"; } ?> large-4 columns headermenu">
-	        		<h6 class="subheader"><?php if ($haslogininfo) { echo $OUTPUT->login_info(); } ?></h6>
 	        		<?php if ($haslangmenu) { echo $OUTPUT->lang_menu(); } ?>
 	        		<h6 class="subheader"><?php echo $PAGE->headingmenu; ?></h6>
 	        	</div>
@@ -116,7 +114,6 @@ echo html_writer::end_tag('head'); ?>
                 <hr>
 	        	<p class="helplink"><?php echo page_doc_link(get_string('moodledocslink')) ?></p>
 	        	<?php
-		        echo $OUTPUT->login_info();
 		        echo $OUTPUT->home_link();
 		        echo $OUTPUT->standard_footer_html();
 		        ?>
