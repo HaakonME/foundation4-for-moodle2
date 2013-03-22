@@ -6,10 +6,22 @@
     font-size: 2.75em; /* respect foundation */
 }
 
-.breadcrumb .singlebutton {
+.breadcrumb .singlebutton { /* move breadcrumb button to right */
 	float: right;
 }
 
-.breadcrumb .singlebutton form {
+.breadcrumb .singlebutton form { /* remove margin from button in breadcrumb */
 	margin: 0;
+}
+
+/* Mimick top-bar links with spans for $PAGE->layout_options['nologinlinks'] */
+.top-bar-section ul li > span {
+    background: none repeat scroll 0 0 #111111;
+    line-height: 45px;
+    color: #555555; /* top-menu dropdown label color */
+    display: block;
+    font-size: 0.8125em;
+    font-weight: bold;
+    padding: 0 15px;
+    width: 100%;
 }

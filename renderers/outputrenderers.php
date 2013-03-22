@@ -13,149 +13,129 @@ class theme_foundation_core_renderer extends core_renderer {
     public function login_info($withlinks = null) {
         global $USER, $CFG, $DB, $SESSION;
 
-        if (during_initial_install()) {
-            return '';
-        }
-
+        // Check Page layout options for links
+        // Obscure, but whatever...
         if (is_null($withlinks)) {
             $withlinks = empty($this->page->layout_options['nologinlinks']);
         }
 
-        $loginpage = ((string)$this->page->url === get_login_url());
+        // Setup a check for if we're on the login page
+        $loginurl = get_login_url();
+        $loginpage = ((string)$this->page->url === $loginurl);
+        $logouturl = $CFG->wwwroot . '/login/logout.php'; // This should be overridden with sesskey() info
+        $logouturl = $CFG->wwwroot . '/login/logout.php?sesskey=' . sesskey();
+
         $course = $this->page->course;
         
-        $loginurl = get_login_url();
-        $logouturl = $CFG->wwwroot . '/login/logout.php?sesskey=' . sesskey();
-        $profileurl = $CFG->wwwroot . '/user/profile.php?id=' . $USER->id;
-        
-        if (session_is_loggedinas()) {
-            $realuser = session_get_realuser();
-            $fullname = fullname($realuser, true);
-            if ($withlinks) {
-                $realuserprofileurl = $CFG->wwwroot . '/course/loginas.php?id=' . $course->id . '&amp;sesskey=' . sesskey();
-                $realuserinfo = '<a href="' . $realuserprofileurl . '">' . $fullname . '</a>';
-                $realuserinfonolink = $fullname;
-            } else {
-                $realuserinfo = $fullname;
-            }
-        } else {
-            $realuserinfo = '';
+        if (during_initial_install() || empty($course->id)) {
+            // $course->id is not defined during installation
+            // Logins don't exist yet...
+            return '';
         }
 
-        if (empty($course->id)) {
-            // Installation in progress
-            return '';
-        } else if (isloggedin()) {
-            // User is logged in
-            $context = context_course::instance($course->id);
+        // Assume they're not logged in
+        $loggedinas = '';
 
-            $fullname = fullname($USER, true);
-            // Since Moodle 2.0 this link always goes to the public profile page (not the course profile page)
-            if ($withlinks) {
-                $username = '<a href="' . $profileurl . '">' . $fullname . '</a>';
-            } else {
-                $username = $fullname;
-            }
+        // Build some general output components
 
-            if (is_mnet_remote_user($USER) and $idprovider = $DB->get_record('mnet_host', array('id'=>$USER->mnethostid))) {
-                // Logged in via MNET
-                if ($withlinks) {
-                    $providerurl = $idprovider->wwwroot;
-                    $providername = $idprovider->name;
-                    $username .= '<a href="' . $providerurl . '">' . $providername . '</a>';
-                } else {
-                    $username .= $providername;
-                }
-            } else {
-                $mnetuser = '';
-            }
+        // Divider
+        $divider = html_writer::empty_tag('li', array('class'=>'divider'));
+        
+        // Start li
+        $startli = html_writer::start_tag('li');
+        $startdropdownli = html_writer::start_tag('li', array('class'=>'has-dropdown'));
+        
+        // End li
+        $endli = html_writer::end_tag('li');
+        // Login button
+        $loginbutton = $divider;
+        $loginbutton .= html_writer::start_tag('li', array('class'=>'has-form'));
+        $loginbutton .= html_writer::tag('a', get_string('login'), array('href'=>$loginurl, 'class'=>'button'));
+        $loginbutton .= html_writer::end_tag('li');
+        
+        // Logout button
+        $logoutbutton = html_writer::empty_tag('li', array('class'=>'divider'));
+        $logoutbutton .= html_writer::start_tag('li', array('class'=>'has-form'));
+        $logoutbutton .= html_writer::tag('a', get_string('logout'), array('href'=>$logouturl, 'class'=>'button'));
+        $logoutbutton .= html_writer::end_tag('li');
 
-            if (isguestuser()) {
-                // Logged in as Guest User
-                $loggedinas = '';
-                if (!$loginpage) {
-                    // Don't show the User name on the login page - it just takes you to the login page...
-                    $loggedinas .= html_writer::empty_tag('li', array('class'=>'divider'));
-                    $loggedinas .= html_writer::start_tag('li');
-                    // Don't provide a link to the "Guest" profile page ($fullname instead of $username)
-                    $loggedinas .= html_writer::tag('a', $fullname, array('href'=>'#'));
-                    $loggedinas .= html_writer::end_tag('li');
-                }
-                if (!$loginpage && $withlinks) {
-                    // Add a "login" button (switch to authenticated user)
-                    $loggedinas .= html_writer::empty_tag('li', array('class'=>'divider'));
-                    $loggedinas .= html_writer::start_tag('li', array('class'=>'has-form'));
-                    $loggedinas .= html_writer::tag('a', get_string('login'), array('href'=>$loginurl, 'class'=>'button'));
-                    $loggedinas .= html_writer::end_tag('li');
-                    // Add a "logout" button (end "Guest" session)
-                    $loggedinas .= html_writer::empty_tag('li', array('class'=>'divider'));
-                    $loggedinas .= html_writer::start_tag('li', array('class'=>'has-form'));
-                    $loggedinas .= html_writer::tag('a', get_string('logout'), array('href'=>$logouturl, 'class'=>'button'));
-                    $loggedinas .= html_writer::end_tag('li');
-                }
-            } else if (is_role_switched($course->id)) { // Has switched roles
-                $rolename = '';
-                if ($role = $DB->get_record('role', array('id'=>$USER->access['rsw'][$context->path]))) {
-                    $rolename = ': '.format_string($role->name);
-                }
-                $loggedinas = $username.$rolename;
-                if ($withlinks) {
-                    $url = new moodle_url('/course/switchrole.php', array('id'=>$course->id,'sesskey'=>sesskey(), 'switchrole'=>0, 'returnurl'=>$this->page->url->out_as_local_url(false)));
-                    $loggedinas .= '('.html_writer::tag('a', get_string('switchrolereturn'), array('href'=>$url)).')';
-                        // Add a "logout" button
-                        $loggedinas .= html_writer::empty_tag('li', array('class'=>'divider'));
-                        $loggedinas .= html_writer::start_tag('li', array('class'=>'has-form'));
-                        $loggedinas .= html_writer::tag('a', get_string('logout'), array('href'=>$logouturl, 'class'=>'button'));
-                        $loggedinas .= html_writer::end_tag('li');
-                }
-            } else {
-                if (empty($realuserinfo) && empty($mnetuser)) {
-                    // Normal User
-                    $loggedinas = html_writer::empty_tag('li', array('class'=>'divider'));
-                    $loggedinas .= html_writer::start_tag('li');
-                    $loggedinas .= $username;
-                    $loggedinas .= html_writer::end_tag('li');
+        if(!$loginpage) {
+        // Don't show any login info on the login page
+            if (isloggedin()) {
+            // Logged in users (MNET, guest, switched role, loggedinas, normal)
+                $fullname = fullname($USER, true);
+    
+                $mnetuser = (is_mnet_remote_user($USER) and $idprovider = $DB->get_record('mnet_host', array('id'=>$USER->mnethostid)));
+                $mnetuserpanel = '';
+    
+                $roleswitched = (is_role_switched($course->id) && !session_is_loggedinas());
+                $roleswitchedpanel = '';
+                
+                $loggedinasuser = (session_is_loggedinas());
+                $loggedinasuserpanel = '';
+                if ($loggedinasuser) {
+                    $realuser = session_get_realuser();
+                    $realuser = fullname($realuser, true);
+                    $realuserprofilelink = $CFG->wwwroot . '/course/loginas.php?id=' . $course->id . '&sesskey=' . sesskey();
+                    $realuserprofile = html_writer::tag('a', $realuser, array('href'=>$realuserprofilelink));
+                    $loggedinasuserpanel .= html_writer::start_tag('ul', array('class'=>'dropdown'));
+                    // Add a divider if the user is also role switched or MNET
+                    ($mnetuser || $roleswitched) ? $loggedinasuserpanel .= $divider : null;
                     if ($withlinks) {
-                        // Add a "logout" button
-                        $loggedinas .= html_writer::empty_tag('li', array('class'=>'divider'));
-                        $loggedinas .= html_writer::start_tag('li', array('class'=>'has-form'));
-                        $loggedinas .= html_writer::tag('a', get_string('logout'), array('href'=>$logouturl, 'class'=>'button'));
-                        $loggedinas .= html_writer::end_tag('li');
+                        $loggedinasuserpanel .= $startli;
+                        $loggedinasuserpanel .= html_writer::tag('label', get_string('returntooriginaluser', '', $realuser));
+                        $loggedinasuserpanel .= $endli;
+                        $loggedinasuserpanel .= html_writer::tag('li', $realuserprofile);
+                    } else {
+                        $loggedinasuserpanel .= $startli;
+                        $loggedinasuserpanel .= html_writer::tag('label', get_string('loggedinas', '', $realuser));
+                        $loggedinasuserpanel .= $endli;
+                    }
+                    $loggedinasuserpanel .= html_writer::end_tag('ul');
+
+                }
+
+                $hasdropdown = ($mnetuser || $roleswitched || $loggedinasuser);
+                $dropdown = $mnetuserpanel . $roleswitchedpanel . $loggedinasuserpanel;
+    
+                if (isguestuser()) {
+                // Guest user
+                    $fullname = html_writer::tag('span', $fullname);
+                    $loggedinas = $divider . $startli . $fullname . $endli; //@TODO: Write a style to swap tag for span
+                    if ($withlinks) {
+                        $loggedinas .= $loginbutton;
                     }
                 } else {
-                    // Loggedin as somebody else (or mnet?)
-                    // Show their user name
-                    $loggedinas = html_writer::empty_tag('li', array('class'=>'divider'));
-                    $loggedinas .= html_writer::start_tag('li', array('class'=>'has-dropdown'));
-                    $loggedinas .= $username;
-                    // Show the Real user name
+                // Normal User
                     if ($withlinks) {
-                        $loggedinas .= html_writer::start_tag('ul', array('class'=>'dropdown'));
-                        $loggedinas .= html_writer::start_tag('li');
-                        $loggedinas .= html_writer::tag('label', get_string('returntooriginaluser', '', $realuserinfonolink));
-                        $loggedinas .= html_writer::tag('li', $realuserinfo);
-                        $loggedinas .= html_writer::end_tag('li');
-                        $loggedinas .= html_writer::end_tag('ul');
-                    }
-                    $loggedinas .= html_writer::end_tag('li');
-                    if ($withlinks) {
-                        // Add a "logout" button
-                        $loggedinas .= html_writer::empty_tag('li', array('class'=>'divider'));
-                        $loggedinas .= html_writer::start_tag('li', array('class'=>'has-form'));
-                        $loggedinas .= html_writer::tag('a', get_string('logout'), array('href'=>$logouturl, 'class'=>'button'));
-                        $loggedinas .= html_writer::end_tag('li');
+                        //Link to profile page
+                        $userprofilelink = $CFG->wwwroot . '/user/profile.php?id=' . $USER->id; 
+                        $userprofile = html_writer::tag('a', $fullname, array('href'=>$userprofilelink));
+                        // Check to see if we need a dropdown
+                        if ($hasdropdown) {
+                            $loggedinas = $divider . $startdropdownli . $userprofile . $dropdown . $endli . $logoutbutton;
+                        } else {
+                            // Normal User
+                            $loggedinas = $divider . $startli . $userprofile . $endli . $logoutbutton;
+                        }
+                    } else {
+                        $fullname = html_writer::tag('a', $fullname, array('href'=>'#')); //@ TODO Write SPAN rules to show dropdown menu
+                        if ($hasdropdown) {
+                            $loggedinas = $divider . $startdropdownli . $fullname . $dropdown . $endli;
+                        } else {
+                            $loggedinas = $divider . $startli . $fullname . $endli;
+                        }
                     }
                 }
-            }
-        } else {
-            // User is not logged in don't display any text
-            $loggedinas = '';
-            if (!$loginpage && $withlinks) {
-                // Add a "login" button
-                $loggedinas = html_writer::empty_tag('li', array('class'=>'divider'));
-                $loggedinas .= html_writer::start_tag('li', array('class'=>'has-form'));
-                $loggedinas .= html_writer::tag('a', get_string('login'), array('href'=>$loginurl, 'class'=>'button'));
-                $loggedinas .= html_writer::end_tag('li');
+            } else {
+            // All not logged in users
+                if ($withlinks) {
+                    // Add a "login" button
+                    $loggedinas = $loginbutton;           
+                } else {
+                    // Don't need to output anything
+                    $loggedinas = '';
+                }
             }
         }
 
@@ -182,6 +162,7 @@ class theme_foundation_core_renderer extends core_renderer {
 
         return $loggedinas;
     }
+
 
     /**
      * Return the navbar content so that it can be echoed out by the layout
