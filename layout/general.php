@@ -54,7 +54,7 @@ echo html_writer::empty_tag('link', array('href'=>$favicon, 'rel'=>'icon', 'type
 echo $OUTPUT->standard_head_html();
 
 echo html_writer::end_tag('head'); ?>
-<body id="<?php p($PAGE->bodyid); ?>" class="<?php p($PAGE->bodyclasses.' '.join(' ', $bodyclasses)); ?>">
+<body id="<?php p($PAGE->bodyid); ?>" class="<?php p($bodyclasses); ?>">
 	<?php echo $OUTPUT->standard_top_of_body_html(); ?>
 	<?php if ($hasheading || $hasnavbar || !empty($courseheader) || $hascustommenu) { ?>
 	    <?php if ($hascustommenu) { ?>
