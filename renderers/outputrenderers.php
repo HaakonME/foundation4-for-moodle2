@@ -68,32 +68,42 @@ class theme_foundation_core_renderer extends core_renderer {
                 $mnetuser = (is_mnet_remote_user($USER) and $idprovider = $DB->get_record('mnet_host', array('id'=>$USER->mnethostid)));
                 $mnetuserpanel = '';
     
-                $roleswitched = (is_role_switched($course->id) && !session_is_loggedinas());
+                $roleswitched = (is_role_switched($course->id));
                 $roleswitchedpanel = '';
                 
                 $loggedinasuser = (session_is_loggedinas());
                 $loggedinasuserpanel = '';
 
                 if ($roleswitched) {
-                    $realuser = session_get_realuser();
-                    $realuser = fullname($realuser, true);
-                    $realuserprofilelink = $CFG->wwwroot . '/course/loginas.php?id=' . $course->id . '&sesskey=' . sesskey();
-                    $realuserprofile = html_writer::tag('a', $realuser, array('href'=>$realuserprofilelink));
-                    $roleswitchedpanel .= html_writer::start_tag('ul', array('class'=>'dropdown'));
+                    $rolename = '';
+                    $context = context_course::instance($course->id);
+                    if ($role = $DB->get_record('role', array('id'=>$USER->access['rsw'][$context->path]))) {
+                        $rolename = format_string($role->name);
+                    }
+                    if (empty($rolename)) {
+                    // Specially for Admins - they have no original role Title...
+                        $rolename = get_string('admin');
+                    }
+                    $returnrolelinkparams = array(
+                                        'id'=>$course->id,
+                                        'sesskey'=>sesskey(),
+                                        'switchrole'=>0,
+                                        'returnurl'=>$this->page->url->out_as_local_url(false)
+                                      );
+                    $returnrolelink = new moodle_url('/course/switchrole.php', $returnrolelinkparams);
+                    $returnrolelink = html_writer::tag('a', $rolename, array('href'=>$returnrolelink));
                     // Add a divider if the user is also role switched or MNET
                     ($mnetuser || $loggedinasuser) ? $roleswitchedpanel .= $divider : null;
                     if ($withlinks) {
                         $roleswitchedpanel .= $startli;
-                        $roleswitchedpanel .= html_writer::tag('label', get_string('returntooriginaluser', '', $realuser));
+                        $roleswitchedpanel .= html_writer::tag('label', get_string('switchrolereturn'));
                         $roleswitchedpanel .= $endli;
-                        $roleswitchedpanel .= html_writer::tag('li', $realuserprofile);
+                        $roleswitchedpanel .= html_writer::tag('li', $returnrolelink);
                     } else {
                         $roleswitchedpanel .= $startli;
-                        $roleswitchedpanel .= html_writer::tag('label', get_string('loggedinas', '', $realuser));
+                        $roleswitchedpanel .= html_writer::tag('label', get_string('role') . ': ' . $rolename);
                         $roleswitchedpanel .= $endli;
                     }
-                    $roleswitchedpanel .= html_writer::end_tag('ul');
-
                 }
 
                 if ($loggedinasuser) {
@@ -101,7 +111,6 @@ class theme_foundation_core_renderer extends core_renderer {
                     $realuser = fullname($realuser, true);
                     $realuserprofilelink = $CFG->wwwroot . '/course/loginas.php?id=' . $course->id . '&sesskey=' . sesskey();
                     $realuserprofile = html_writer::tag('a', $realuser, array('href'=>$realuserprofilelink));
-                    $loggedinasuserpanel .= html_writer::start_tag('ul', array('class'=>'dropdown'));
                     // Add a divider if the user is also role switched or MNET
                     ($mnetuser || $roleswitched) ? $loggedinasuserpanel .= $divider : null;
                     if ($withlinks) {
@@ -114,12 +123,11 @@ class theme_foundation_core_renderer extends core_renderer {
                         $loggedinasuserpanel .= html_writer::tag('label', get_string('loggedinas', '', $realuser));
                         $loggedinasuserpanel .= $endli;
                     }
-                    $loggedinasuserpanel .= html_writer::end_tag('ul');
-
                 }
 
                 $hasdropdown = ($mnetuser || $roleswitched || $loggedinasuser);
                 $dropdown = $mnetuserpanel . $roleswitchedpanel . $loggedinasuserpanel;
+                $dropdown = html_writer::tag('ul', $dropdown, array('class'=>'dropdown'));
     
                 if (isguestuser()) {
                 // Guest user
