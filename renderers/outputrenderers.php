@@ -73,6 +73,29 @@ class theme_foundation_core_renderer extends core_renderer {
                 
                 $loggedinasuser = (session_is_loggedinas());
                 $loggedinasuserpanel = '';
+
+                if ($roleswitched) {
+                    $realuser = session_get_realuser();
+                    $realuser = fullname($realuser, true);
+                    $realuserprofilelink = $CFG->wwwroot . '/course/loginas.php?id=' . $course->id . '&sesskey=' . sesskey();
+                    $realuserprofile = html_writer::tag('a', $realuser, array('href'=>$realuserprofilelink));
+                    $roleswitchedpanel .= html_writer::start_tag('ul', array('class'=>'dropdown'));
+                    // Add a divider if the user is also role switched or MNET
+                    ($mnetuser || $loggedinasuser) ? $roleswitchedpanel .= $divider : null;
+                    if ($withlinks) {
+                        $roleswitchedpanel .= $startli;
+                        $roleswitchedpanel .= html_writer::tag('label', get_string('returntooriginaluser', '', $realuser));
+                        $roleswitchedpanel .= $endli;
+                        $roleswitchedpanel .= html_writer::tag('li', $realuserprofile);
+                    } else {
+                        $roleswitchedpanel .= $startli;
+                        $roleswitchedpanel .= html_writer::tag('label', get_string('loggedinas', '', $realuser));
+                        $roleswitchedpanel .= $endli;
+                    }
+                    $roleswitchedpanel .= html_writer::end_tag('ul');
+
+                }
+
                 if ($loggedinasuser) {
                     $realuser = session_get_realuser();
                     $realuser = fullname($realuser, true);
@@ -228,6 +251,14 @@ class theme_foundation_core_renderer extends core_renderer {
         $site = get_site();
         $sitename = $site->fullname;
         $siteurl = $CFG->wwwroot;
+        if (right_to_left()) {
+            $direction = array('left-side' => 'right', 'right-side' => 'left');
+            $dir = 'right';
+            
+        } else {
+            $direction = array('left-side' => 'left', 'right-side' => 'right');
+            $dir = '';
+        }
 
         // If the menu has no children return an empty string
         if (!$menu->has_children()) {
@@ -235,7 +266,7 @@ class theme_foundation_core_renderer extends core_renderer {
         }
 
         // Start the title area that contains the Site Name Menu icon
-        $content = html_writer::start_tag('ul', array('class'=>'title-area'));
+        $content = html_writer::start_tag('ul', array('class'=>'title-area ' . $dir));
         $content .= html_writer::start_tag('li', array('class'=>'name'));
         $content .= html_writer::start_tag('h1');
         $content .= html_writer::tag('a', $sitename, array('href'=>$siteurl));
@@ -250,7 +281,7 @@ class theme_foundation_core_renderer extends core_renderer {
 
         // Start the custommenu items
         $content .= html_writer::start_tag('section', array('class'=>'top-bar-section'));
-        $content .= html_writer::start_tag('ul', array('class'=>'left'));
+        $content .= html_writer::start_tag('ul', array('class'=> $direction['left-side']));
         
         foreach ($menu->get_children() as $item) {
             // Add dividers to top level items
@@ -261,7 +292,7 @@ class theme_foundation_core_renderer extends core_renderer {
         $content .= html_writer::end_tag('ul');
         
         // Start the right hand items
-        $content .= html_writer::start_tag('ul', array('class'=>'right'));
+        $content .= html_writer::start_tag('ul', array('class'=> $direction['right-side']));
         
         // Render login_info() (if the theme allows it...
         if(empty($PAGE->layout_options['nologininfo'])) {
