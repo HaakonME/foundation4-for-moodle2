@@ -66,7 +66,7 @@ class theme_foundation_core_renderer extends core_renderer {
                 $fullname = fullname($USER, true);
     
                 $mnetidprovider = $DB->get_record('mnet_host', array('id'=>$USER->mnethostid));
-                $mnetuser = (is_mnet_remote_user($USER) && $idprovider);
+                $mnetuser = (is_mnet_remote_user($USER) && $mnetidprovider);
                 $mnetuserpanel = '';
     
                 $roleswitched = (is_role_switched($course->id));
@@ -75,9 +75,18 @@ class theme_foundation_core_renderer extends core_renderer {
                 $loggedinasuser = (session_is_loggedinas());
                 $loggedinasuserpanel = '';
 
+                $mnetuser = TRUE;
                 if($mnetuser) {
                     ($roleswitched || $loggedinasuser) ? $mnetuserpanel .= $divider : null;
-                    
+                    if ($withlinks) {
+                        $mnetuserpanel .= $startli;
+                        $mnetuserpanel .= html_writer::tag('label', 'MNET');
+                        $mnetuserpanel .= $endli;
+                    } else {
+                        $mnetuserpanel .= $startli;
+                        $mnetuserpanel .= html_writer::tag('label', 'MNET');
+                        $mnetuserpanel .= $endli;
+                    }
                 }
 
                 if ($roleswitched) {
