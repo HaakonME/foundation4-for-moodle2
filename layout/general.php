@@ -60,8 +60,9 @@ echo html_writer::end_tag('head'); ?>
 	    <?php if ($hascustommenu) { ?>
         	<nav id="custommenu" class="top-bar"><?php echo $custommenu; ?></nav>
         <?php } ?>
-		<header class="row">
-	        	<?php if ($hasheading) { ?>
+		<header>
+            <div class="row">
+                <?php if ($hasheading) { ?>
 	        		<div class="<?php if(right_to_left()) { echo "push-4"; } ?> large-8 columns">
 	        			<h1 class="headermain"><?php echo $PAGE->heading; ?></h1>
 	        		</div>
@@ -70,22 +71,28 @@ echo html_writer::end_tag('head'); ?>
 	        		<?php if ($haslangmenu) { echo $OUTPUT->lang_menu(); } ?>
 	        		<h6 class="subheader"><?php echo $PAGE->headingmenu; ?></h6>
 	        	</div>
+            </div>
 		</header>
         <?php if ($hasnavbar) { ?>
-            <nav class="row navbar">
-                <div class="large-12 columns breadcrumb">
-                	<div class="breadcrumbs"><?php echo $OUTPUT->navbar(); echo $PAGE->button; ?></div>
-                	<hr>
-                </div>
-            </nav>
+            <div>
+                <nav class="row navbar">
+                    <div class="large-12 columns breadcrumb">
+                    	<div class="breadcrumbs"><?php echo $OUTPUT->navbar(); echo $PAGE->button; ?></div>
+                    	<hr>
+                    </div>
+                </nav>
+            </div>
         <?php } ?>
 		<?php if (!empty($courseheader)) { ?>
-			<header class="row">
-	           	<div id="course-header" class="<?php if ($showsidepre) { echo "large-9 large-offset-3"; } else { echo "large-12"; } ?> columns"><?php echo $courseheader; ?></div>
-	        </header>
+            <div>
+    			<header class="row">
+    	           	<div id="course-header" class="<?php if ($showsidepre) { echo "large-9 large-offset-3"; } else { echo "large-12"; } ?> columns"><?php echo $courseheader; ?></div>
+    	        </header>
+            </div>
 	    <?php } ?>
 	<?php } ?>
-	<div class="row">
+	<div>
+	   <div class="row">
 		<section id="region-main" class="<?php if ($showsidepre) { echo "large-9"; } else { echo "large-12"; } ?> <?php if (!right_to_left() && $showsidepre) { echo "push-3"; } ?> columns">
 			<div class="region-content">
 				<?php echo $coursecontentheader; ?>
@@ -101,23 +108,28 @@ echo html_writer::end_tag('head'); ?>
 			</aside>
 		<?php } ?>
 	</div>
+	</div>
     <?php if(!empty($coursefooter)) { ?>
-        <footer class="row">
-        	<div id="course-footer" class="<?php if ($showsidepre) { echo "large-9 large-offset-3"; } else { echo "large-12"; } ?> columns">
-        		<?php echo $coursefooter; ?>
-        	</div>
+        <footer>
+            <div class="row">
+            	<div id="course-footer" class="<?php if ($showsidepre) { echo "large-9 large-offset-3"; } else { echo "large-12"; } ?> columns">
+            		<?php echo $coursefooter; ?>
+            	</div>
+            </div>
         </footer>
     <?php } ?>
     <?php if ($hasfooter) { ?>
-        <footer class="row">
-        	<div id="page-footer" class="large-12 columns">
-                <hr>
-	        	<p class="helplink"><?php echo page_doc_link(get_string('moodledocslink')) ?></p>
-	        	<?php
-		        echo $OUTPUT->home_link();
-		        echo $OUTPUT->standard_footer_html();
-		        ?>
-		    </div>
+        <footer>
+            <div class="row">
+            	<div id="page-footer" class="large-12 columns">
+                    <hr>
+    	        	<p class="helplink"><?php echo page_doc_link(get_string('moodledocslink')) ?></p>
+    	        	<?php
+    		        echo $OUTPUT->home_link();
+    		        echo $OUTPUT->standard_footer_html();
+    		        ?>
+    		    </div>
+            </div>
 		</footer>
 	<?php } ?>
 	<?php echo $OUTPUT->standard_end_of_body_html() ?>
