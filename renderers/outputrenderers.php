@@ -65,8 +65,7 @@ class theme_foundation_core_renderer extends core_renderer {
             // Logged in users (MNET, guest, switched role, loggedinas, normal)
                 $fullname = fullname($USER, true);
     
-                $mnetidprovider = $DB->get_record('mnet_host', array('id'=>$USER->mnethostid));
-                $mnetuser = (is_mnet_remote_user($USER) && $mnetidprovider);
+                $mnetuser = (is_mnet_remote_user($USER) && $DB->get_record('mnet_host', array('id'=>$USER->mnethostid)));
                 $mnetuserpanel = '';
     
                 $roleswitched = (is_role_switched($course->id));
