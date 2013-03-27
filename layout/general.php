@@ -67,7 +67,7 @@ echo html_writer::end_tag('head'); ?>
 	        			<h1 class="headermain"><?php echo $PAGE->heading; ?></h1>
 	        		</div>
 	        	<?php } ?>
-	        	<div class="<?php if (!$hasheading) { echo "large-offset-8"; } ?> <?php if(right_to_left()) { echo "pull-8"; } ?> large-4 columns headermenu">
+	        	<div class="<?php if (!$hasheading) { echo "large-offset-8"; } if(right_to_left()) { echo "pull-8"; } ?> large-4 columns headermenu">
 	        		<?php if ($haslangmenu) { echo $OUTPUT->lang_menu(); } ?>
 	        		<h6 class="subheader"><?php echo $PAGE->headingmenu; ?></h6>
 	        	</div>
