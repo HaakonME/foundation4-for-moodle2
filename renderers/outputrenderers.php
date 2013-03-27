@@ -12,6 +12,15 @@ class theme_foundation_core_renderer extends core_renderer {
      */
     public function login_info($withlinks = null) {
         global $USER, $CFG, $DB, $SESSION;
+        
+        if (right_to_left()) {
+            $direction = array('left-side' => 'right', 'right-side' => 'left');
+            $dir = 'right';
+            
+        } else {
+            $direction = array('left-side' => 'left', 'right-side' => 'right');
+            $dir = '';
+        }
 
         // Check Page layout options for links
         // Obscure, but whatever...
@@ -39,11 +48,11 @@ class theme_foundation_core_renderer extends core_renderer {
         // Build some general output components
 
         // Divider
-        $divider = html_writer::empty_tag('li', array('class'=>'divider'));
+        $divider = html_writer::empty_tag('li', array('class'=>'divider ' . $dir));
         
         // Start li
-        $startli = html_writer::start_tag('li');
-        $startdropdownli = html_writer::start_tag('li', array('class'=>'has-dropdown'));
+        $startli = html_writer::start_tag('li', array('class'=>$dir));
+        $startdropdownli = html_writer::start_tag('li', array('class'=>'has-dropdown ' . $dir));
         
         // End li
         $endli = html_writer::end_tag('li');
@@ -318,7 +327,7 @@ class theme_foundation_core_renderer extends core_renderer {
         
         foreach ($menu->get_children() as $item) {
             // Add dividers to top level items
-            $content .= html_writer::empty_tag('li', array('class'=>'divider'));
+            $content .= html_writer::empty_tag('li', array('class'=>'divider ' . $dir));
             // Render each child
             $content .= $this->render_custom_menu_item($item);
         }
@@ -353,9 +362,18 @@ class theme_foundation_core_renderer extends core_renderer {
      */
     protected function render_custom_menu_item(custom_menu_item $menunode) {
 
+        if (right_to_left()) {
+            $direction = array('left-side' => 'right', 'right-side' => 'left');
+            $dir = 'right';
+            
+        } else {
+            $direction = array('left-side' => 'left', 'right-side' => 'right');
+            $dir = '';
+        }
+
         if ($menunode->has_children()) {
             // If the child has menus render it as a sub menu
-            $content = html_writer::start_tag('li', array('class'=>'has-dropdown'));
+            $content = html_writer::start_tag('li', array('class'=>'has-dropdown ' . $dir));
             if ($menunode->get_url() !== null) {
                 $url = $menunode->get_url();
             } else {
