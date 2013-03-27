@@ -48,3 +48,14 @@
   padding-right: 0.75em;
   padding-left: 0
 }
+
+/* Remove border and margin from blocks */
+.block {
+  border: 0 none;
+  margin-bottom: 0;
+}
+
+/* make skip blocks (accesibility) not take up space */
+.skip-block-to {
+  height: 0;
+}

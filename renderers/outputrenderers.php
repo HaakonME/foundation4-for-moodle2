@@ -405,5 +405,124 @@ class theme_foundation_core_renderer extends core_renderer {
         return $content;
     }
 
+    /**
+     * Prints a nice side block with an optional header.
+     *
+     * The content is described
+     * by a {@link core_renderer::block_contents} object.
+     *
+     * <section id="inst{$instanceid}" class="block_{$blockname} block">
+     *      <div class="header"></div>
+     *      <div class="content">
+     *          ...CONTENT...
+     *          <div class="footer">
+     *          </div>
+     *      </div>
+     *      <div class="annotation">
+     *      </div>
+     * </section>
+     *
+     * @param block_contents $bc HTML for the content
+     * @param string $region the region the block is appearing in.
+     * @return string the HTML to be output.
+     */
+    public function block(block_contents $bc, $region) {
+        $bc = clone($bc); // Avoid messing up the object passed in.
+        if (empty($bc->blockinstanceid) || !strip_tags($bc->title)) {
+            $bc->collapsible = block_contents::NOT_HIDEABLE;
+        }
+        $skiptitle = strip_tags($bc->title);
+        if ($bc->blockinstanceid && !empty($skiptitle)) {
+            $bc->attributes['aria-labelledby'] = 'instance-'.$bc->blockinstanceid.'-header';
+        } else if (!empty($bc->arialabel)) {
+            $bc->attributes['aria-label'] = $bc->arialabel;
+        }
+        if ($bc->collapsible == block_contents::HIDDEN) {
+            $bc->add_class('hidden');
+        }
+        if (!empty($bc->controls)) {
+            $bc->add_class('block_with_controls');
+        }
+
+
+        if (empty($skiptitle)) {
+            $output = '';
+            $skipdest = '';
+        } else {
+            $output = html_writer::tag('a', get_string('skipa', 'access', $skiptitle), array('href' => '#sb-' . $bc->skipid, 'class' => 'skip-block'));
+            $skipdest = html_writer::tag('span', '', array('id' => 'sb-' . $bc->skipid, 'class' => 'skip-block-to'));
+        }
+
+        $output .= html_writer::start_tag('section', $bc->attributes);
+
+        $output .= $this->block_header($bc);
+        $output .= $this->block_content($bc);
+
+        $output .= html_writer::end_tag('section');
+
+        $output .= $this->block_annotation($bc);
+
+        $output .= $skipdest;
+
+        $this->init_block_hider_js($bc);
+        return $output;
+    }
+    
+    /**
+     * Produces a header for a block
+     *
+     * @param block_contents $bc
+     * @return string
+     */
+    protected function block_header(block_contents $bc) {
+
+        $output = '';
+
+        $attributes = array();
+        if ($bc->blockinstanceid) {
+            $attributes['id'] = 'instance-'.$bc->blockinstanceid.'-header';
+        }
+        $attributes['class'] = 'title header';
+        if ($bc->title) {
+            // Block has a title
+            $title = html_writer::tag('a', $bc->title, array('href'=>'#'));
+        } else if (!empty($bc->arialabel)) {
+            // Block has an aria label
+            $title = html_writer::tag('a', $bc->arialabel, array('href'=>'#'));
+        } else {
+            // We just call it a 'block'
+            $title = html_writer::tag('a', get_string('block'), array('href'=>'#'));
+        }
+        $title = html_writer::tag('p', $title, $attributes);
+        $output .= $title;
+
+        return $output;
+    }
+
+    /**
+     * Produces the content area for a block
+     *
+     * @param block_contents $bc
+     * @return string
+     */
+    protected function block_content(block_contents $bc) {
+        $output = html_writer::start_tag('div', array('class' => 'content'));
+        if (!$bc->title && !$this->block_controls($bc->controls)) {
+            $output .= html_writer::tag('div', '', array('class'=>'block_action notitle'));
+        }
+        $controlshtml = '';
+        if (!empty($bc->controls)) {
+            $bc->add_class('block_with_controls');
+            $controlshtml = $this->block_controls($bc->controls);
+            $blockaction = html_writer::tag('div', '', array('class'=>'block_action'));
+            $controlshtml = html_writer::tag('div', $blockaction . $controlshtml);
+        }
+        $output .= $controlshtml;
+        $output .= $bc->content;
+        $output .= $this->block_footer($bc);
+        $output .= html_writer::end_tag('div');
+
+        return $output;
+    }
 
 }
