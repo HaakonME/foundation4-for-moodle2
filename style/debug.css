@@ -25,3 +25,8 @@
     padding: 0 15px;
     width: 100%;
 }
+
+/* Fix unavailable for spans in navbar */
+.breadcrumbs li.unavailable span {
+  color: #999999;
+}

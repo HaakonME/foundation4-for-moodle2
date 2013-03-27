@@ -223,7 +223,18 @@ class theme_foundation_core_renderer extends core_renderer {
         for ($i=0;$i < $itemcount;$i++) {
             $item = $items[$i];
             $item->hideicon = true;
-            $content = html_writer::tag('li', $this->render($item));
+            if ($item->isactive == true) {
+                // Current Page
+                $content = html_writer::tag('li', $this->render($item), array('class'=>'current'));
+            } elseif ($item->action == NULL) {
+                // Page without links
+                $content = html_writer::tag('li', $this->render($item), array('class'=>'unavailable'));
+
+            } else {
+                // Normal Breadcrumb items
+                $content = html_writer::tag('li', $this->render($item));
+
+            }
             $htmlblocks[] = $content;
         }
 
