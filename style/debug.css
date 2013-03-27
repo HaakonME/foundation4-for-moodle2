@@ -34,7 +34,7 @@
 
 .dir-rtl .breadcrumbs li:after {
   color: #AAAAAA;
-  content: "/";
+  content: "\\";
   position: relative;
   top: 1px;
 }
