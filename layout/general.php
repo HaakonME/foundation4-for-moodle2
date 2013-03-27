@@ -77,7 +77,7 @@ echo html_writer::end_tag('head'); ?>
             <div>
                 <nav class="row navbar">
                     <div class="large-12 columns breadcrumb">
-                    	<div class="breadcrumbs"><?php echo $OUTPUT->navbar(); echo $PAGE->button; ?></div>
+                    	<div class="breadcrumbs"><?php echo $OUTPUT->navbar() . $PAGE->button; ?></div>
                     	<hr>
                     </div>
                 </nav>
