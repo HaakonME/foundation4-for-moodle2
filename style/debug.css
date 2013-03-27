@@ -6,10 +6,6 @@
     font-size: 2.75em; /* respect foundation */
 }
 
-.breadcrumb .singlebutton { /* move breadcrumb button to right */
-	float: right;
-}
-
 .breadcrumb .singlebutton form { /* remove margin from button in breadcrumb */
 	margin: 0;
 }

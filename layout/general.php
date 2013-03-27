@@ -78,7 +78,7 @@ echo html_writer::end_tag('head'); ?>
                     <div class="large-12 columns breadcrumb">
                     	<div class="breadcrumbs">
                     	   <?php echo $OUTPUT->navbar(); ?>
-                    	   <div class="secondary <?php if(right_to_left()) { echo "left"; }?>">
+                    	   <div class="secondary <?php if(right_to_left()) { echo "left"; } else { echo "right"; } ?>">
                     	       <?php echo $PAGE->button; ?>
                     	   </div>
                         </div>
