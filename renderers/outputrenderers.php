@@ -74,7 +74,7 @@ class theme_foundation_core_renderer extends core_renderer {
             // Logged in users (MNET, guest, switched role, loggedinas, normal)
                 $fullname = fullname($USER, true);
     
-                $mnetuser = (is_mnet_remote_user($USER) && $DB->get_record('mnet_host', array('id'=>$USER->mnethostid)));
+                $mnetuser = (is_mnet_remote_user($USER) && $idprovider = $DB->get_record('mnet_host', array('id'=>$USER->mnethostid)));
                 $mnetuserpanel = '';
     
                 $roleswitched = (is_role_switched($course->id));
@@ -83,16 +83,19 @@ class theme_foundation_core_renderer extends core_renderer {
                 $loggedinasuser = (session_is_loggedinas());
                 $loggedinasuserpanel = '';
 
-                $mnetuser = TRUE;
                 if($mnetuser) {
+                    $providerurl = $idprovider->wwwroot;
+                    $providername = $idprovider->name;
+                    $providerlink = html_writer::tag('a', $providername, array('href'=>$providerurl));
                     ($roleswitched || $loggedinasuser) ? $mnetuserpanel .= $divider : null;
                     if ($withlinks) {
                         $mnetuserpanel .= $startli;
-                        $mnetuserpanel .= html_writer::tag('label', 'MNET');
+                        $mnetuserpanel .= html_writer::tag('label', get_string('yourhost', 'mnet') . ':');
+                        $mnetuserpanel .= html_writer::tag('li', $providerlink);
                         $mnetuserpanel .= $endli;
                     } else {
                         $mnetuserpanel .= $startli;
-                        $mnetuserpanel .= html_writer::tag('label', 'MNET');
+                        $mnetuserpanel .= html_writer::tag('label', $providername);
                         $mnetuserpanel .= $endli;
                     }
                 }
