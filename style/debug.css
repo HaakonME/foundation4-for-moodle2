@@ -30,3 +30,25 @@
 .breadcrumbs li.unavailable span {
   color: #999999;
 }
+
+/* fix breadcrumbs separator in rtl */
+.dir-rtl .breadcrumbs li:before {
+  content: "";
+}
+
+.dir-rtl .breadcrumbs li:after {
+  color: #AAAAAA;
+  content: "/";
+  position: relative;
+  top: 1px;
+}
+
+.dir-rtl .breadcrumbs li:first-child:after {
+    content: "";
+}
+
+.dir-rtl .breadcrumbs li a,
+.dir-rtl .breadcrumbs li span {
+  padding-right: 0.75em;
+  padding-left: 0
+}

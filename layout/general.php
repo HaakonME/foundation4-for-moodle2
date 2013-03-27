@@ -27,7 +27,6 @@ $bodyclasses[] = ($showsidepre) ? 'side-pre-only' : 'content-only';
 $bodyclasses[] = ($hascustommenu) ? 'has_custom_menu' : null;
 $bodyclasses = $PAGE->bodyclasses . ' ' . join(' ', $bodyclasses);
 
-
 /* HTML5, yo! */
 echo $OUTPUT->doctype();
 
@@ -77,7 +76,12 @@ echo html_writer::end_tag('head'); ?>
             <div>
                 <nav class="row navbar">
                     <div class="large-12 columns breadcrumb">
-                    	<div class="breadcrumbs"><?php echo $OUTPUT->navbar() . $PAGE->button; ?></div>
+                    	<div class="breadcrumbs">
+                    	   <?php echo $OUTPUT->navbar(); ?>
+                    	   <div class="secondary <?php if(right_to_left()) { echo "left"; }?>">
+                    	       <?php echo $PAGE->button; ?>
+                    	   </div>
+                        </div>
                     	<hr>
                     </div>
                 </nav>
