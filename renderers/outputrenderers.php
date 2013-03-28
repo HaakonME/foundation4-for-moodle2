@@ -510,7 +510,6 @@ class theme_foundation_core_renderer extends core_renderer {
             $title = html_writer::tag('span', '', array('class'=>'block_action'));
         }
 
-
         $output = '';
         $output = html_writer::tag('header', $title, array('id'=>$blockid, 'class' => 'header title'));
         return $output;
