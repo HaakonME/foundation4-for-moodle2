@@ -404,6 +404,25 @@ class theme_foundation_core_renderer extends core_renderer {
         // Return the sub menu
         return $content;
     }
+    
+    /**
+     * Output the row of editing icons for a block, as defined by the controls array.
+     *
+     * @param array $controls an array like {@link block_contents::$controls}.
+     * @return string HTML fragment.
+     */
+    public function block_controls($controls) {
+        if (empty($controls)) {
+            return '';
+        }
+        $controlshtml = array();
+        foreach ($controls as $control) {
+            $controlshtml[] = html_writer::tag('a',
+                    html_writer::empty_tag('img',  array('src' => $this->pix_url($control['icon'])->out(false), 'alt' => $control['caption'])),
+                    array('class' => 'icon ' . $control['class'],'title' => $control['caption'], 'href' => $control['url']));
+        }
+        return html_writer::tag('div', implode('', $controlshtml), array('class' => 'commands'));
+    }
 
     /**
      * Prints a nice side block with an optional header.
@@ -411,12 +430,12 @@ class theme_foundation_core_renderer extends core_renderer {
      * The content is described
      * by a {@link core_renderer::block_contents} object.
      *
-     * <section id="inst{$instanceid}" class="block_{$blockname} block">
-     *      <div class="header"></div>
+     * <section id="inst{$instanceid}" class="block_{$blockname} block section">
+     *      <header class="header title"></header>
      *      <div class="content">
      *          ...CONTENT...
-     *          <div class="footer">
-     *          </div>
+     *          <footer class="footer">
+     *          </footer>
      *      </div>
      *      <div class="annotation">
      *      </div>
@@ -467,35 +486,31 @@ class theme_foundation_core_renderer extends core_renderer {
         $this->init_block_hider_js($bc);
         return $output;
     }
-    
+
     /**
      * Produces a header for a block
      *
      * @param block_contents $bc
      * @return string
      */
-    protected function block_header(block_contents $bc) {
+    protected function block_header(block_contents $bc) {        
+        // Check for a title (if it exists
+        $blockid = '';
+        if ($bc->blockinstanceid) {
+            $blockid = 'instance-'.$bc->blockinstanceid.'-header';
+        }
+
+        $title = '';
+        if ($bc->title) {
+            $title = html_writer::tag('span', $bc->title, array('class'=>'block_action'));
+        } elseif ($bc->arialabel) {
+            $title = html_writer::tag('span', $bc->arialabel, array('class'=>'block_action'));
+        } else {
+            $title = html_writer::tag('span', get_string('block'), array('class'=>'block_action'));
+        }
 
         $output = '';
-
-        $attributes = array();
-        if ($bc->blockinstanceid) {
-            $attributes['id'] = 'instance-'.$bc->blockinstanceid.'-header';
-        }
-        $attributes['class'] = 'title header';
-        if ($bc->title) {
-            // Block has a title
-            $title = html_writer::tag('a', $bc->title, array('href'=>'#'));
-        } else if (!empty($bc->arialabel)) {
-            // Block has an aria label
-            $title = html_writer::tag('a', $bc->arialabel, array('href'=>'#'));
-        } else {
-            // We just call it a 'block'
-            $title = html_writer::tag('a', get_string('block'), array('href'=>'#'));
-        }
-        $title = html_writer::tag('p', $title, $attributes);
-        $output .= $title;
-
+        $output = html_writer::tag('header', $title, array('id'=>$blockid, 'class' => 'header title'));
         return $output;
     }
 
@@ -510,19 +525,59 @@ class theme_foundation_core_renderer extends core_renderer {
         if (!$bc->title && !$this->block_controls($bc->controls)) {
             $output .= html_writer::tag('div', '', array('class'=>'block_action notitle'));
         }
-        $controlshtml = '';
-        if (!empty($bc->controls)) {
-            $bc->add_class('block_with_controls');
-            $controlshtml = $this->block_controls($bc->controls);
-            $blockaction = html_writer::tag('div', '', array('class'=>'block_action'));
-            $controlshtml = html_writer::tag('div', $blockaction . $controlshtml);
-        }
-        $output .= $controlshtml;
         $output .= $bc->content;
         $output .= $this->block_footer($bc);
         $output .= html_writer::end_tag('div');
 
         return $output;
     }
+
+    /**
+     * Produces the footer for a block
+     *
+     * @param block_contents $bc
+     * @return string
+     */
+    protected function block_footer(block_contents $bc) {
+        $output = '';
+        if ($bc->footer) {
+            $output .= html_writer::tag('footer', $bc->footer, array('class' => 'footer'));
+        }
+        return $output;
+    }
+
+    /**
+     * Render the contents of a block_list.
+     *
+     * @param array $icons the icon for each item.
+     * @param array $items the content of each item.
+     * @return string HTML
+     */
+    public function list_block_contents($icons, $items) {
+        $row = 0;
+        $lis = array();
+        foreach ($items as $key => $string) {
+            $item = html_writer::start_tag('li', array('class' => 'r' . $row));
+            if (!empty($icons[$key])) { //test if the content has an assigned icon
+                $item .= html_writer::tag('div', $icons[$key], array('class' => 'icon column c0'));
+            }
+            $item .= html_writer::tag('div', $string, array('class' => 'column c1'));
+            $item .= html_writer::end_tag('li');
+            $lis[] = $item;
+            $row = 1 - $row; // Flip even/odd.
+        }
+        return html_writer::tag('ul', implode("\n", $lis), array('class' => 'unlist'));
+    }
+
+    /**
+     * Output a place where the block that is currently being moved can be dropped.
+     *
+     * @param block_move_target $target with the necessary details.
+     * @return string the HTML to be output.
+     */
+    public function block_move_target($target) {
+        return html_writer::tag('a', html_writer::tag('span', $target->text, array('class' => 'accesshide')), array('href' => $target->url, 'class' => 'blockmovetarget'));
+    }
+
 
 }

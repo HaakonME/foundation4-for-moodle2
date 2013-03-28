@@ -59,3 +59,44 @@
 .skip-block-to {
   height: 0;
 }
+
+/* Keep Accordian Content from being hidden */
+.section-container section .content,
+.section-container .section .content,
+.section-container.auto section .content,
+.section-container.auto .section .content {
+  display: inherit;
+}
+
+/* Stop Moodle from realigning block position stuff */
+.block .header .block_action {
+    float: none;
+    margin: 0;
+}
+
+.section-container section .title span,
+.section-container .section .title span,
+.section-container.auto section .title span,
+.section-container.auto .section .title span {
+  color: #333333;
+  display: inline-block;
+  font-size: 0.875em;
+  padding: 0.9375em;
+  white-space: nowrap;
+  width: 100%;
+}
+
+
+.block .header .block_action img,
+.block .header .block_action input {
+  margin: 0 0.9375em 0 0; /* Same padding as block_action */
+}
+
+
+/* Sorry Foundation - putting a pointer when we're not using your JS doesn't make sense */
+.section-container section .title,
+.section-container .section .title,
+.section-container.auto section .title,
+.section-container.auto .section .title {
+  cursor: default;
+}

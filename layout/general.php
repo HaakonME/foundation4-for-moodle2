@@ -106,7 +106,7 @@ echo html_writer::end_tag('head'); ?>
 		</section>
 		<?php if ($showsidepre) { ?>
 			<aside id="region-pre" class="large-3 <?php if (!right_to_left()) { echo "pull-9"; } ?> columns block-region">
-				<div class="region-content section-container accordion" data-section="accordion">
+				<div class="region-content section-container accordion">
 					<?php echo $OUTPUT->blocks_for_region('side-pre'); ?>
 				</div>
 			</aside>
