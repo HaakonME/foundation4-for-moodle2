@@ -86,6 +86,8 @@ echo html_writer::end_tag('head'); ?>
                     </div>
                 </nav>
             </div>
+        <?php } else { ?>
+            <div><div class="row"><div class="large-12 columns"><hr></div></div></div>
         <?php } ?>
 		<?php if (!empty($courseheader)) { ?>
             <div>
