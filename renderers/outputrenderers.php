@@ -494,20 +494,22 @@ class theme_foundation_core_renderer extends core_renderer {
      * @return string
      */
     protected function block_header(block_contents $bc) {        
-        // Check for a title (if it exists
+        // Check for a title (if it exists)
         $blockid = '';
         if ($bc->blockinstanceid) {
             $blockid = 'instance-'.$bc->blockinstanceid.'-header';
         }
 
+        // There will always be a title
         $title = '';
         if ($bc->title) {
             $title = html_writer::tag('span', $bc->title, array('class'=>'block_action'));
         } elseif ($bc->arialabel) {
             $title = html_writer::tag('span', $bc->arialabel, array('class'=>'block_action'));
         } else {
-            $title = html_writer::tag('span', get_string('block'), array('class'=>'block_action'));
+            $title = html_writer::tag('span', '', array('class'=>'block_action'));
         }
+
 
         $output = '';
         $output = html_writer::tag('header', $title, array('id'=>$blockid, 'class' => 'header title'));
@@ -522,9 +524,8 @@ class theme_foundation_core_renderer extends core_renderer {
      */
     protected function block_content(block_contents $bc) {
         $output = html_writer::start_tag('div', array('class' => 'content'));
-        if (!$bc->title && !$this->block_controls($bc->controls)) {
-            $output .= html_writer::tag('div', '', array('class'=>'block_action notitle'));
-        }
+        // Block controls
+        $output .= $this->block_controls($bc->controls);
         $output .= $bc->content;
         $output .= $this->block_footer($bc);
         $output .= html_writer::end_tag('div');
@@ -544,29 +545,6 @@ class theme_foundation_core_renderer extends core_renderer {
             $output .= html_writer::tag('footer', $bc->footer, array('class' => 'footer'));
         }
         return $output;
-    }
-
-    /**
-     * Render the contents of a block_list.
-     *
-     * @param array $icons the icon for each item.
-     * @param array $items the content of each item.
-     * @return string HTML
-     */
-    public function list_block_contents($icons, $items) {
-        $row = 0;
-        $lis = array();
-        foreach ($items as $key => $string) {
-            $item = html_writer::start_tag('li', array('class' => 'r' . $row));
-            if (!empty($icons[$key])) { //test if the content has an assigned icon
-                $item .= html_writer::tag('div', $icons[$key], array('class' => 'icon column c0'));
-            }
-            $item .= html_writer::tag('div', $string, array('class' => 'column c1'));
-            $item .= html_writer::end_tag('li');
-            $lis[] = $item;
-            $row = 1 - $row; // Flip even/odd.
-        }
-        return html_writer::tag('ul', implode("\n", $lis), array('class' => 'unlist'));
     }
 
     /**
