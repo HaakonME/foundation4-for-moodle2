@@ -546,15 +546,4 @@ class theme_foundation_core_renderer extends core_renderer {
         return $output;
     }
 
-    /**
-     * Output a place where the block that is currently being moved can be dropped.
-     *
-     * @param block_move_target $target with the necessary details.
-     * @return string the HTML to be output.
-     */
-    public function block_move_target($target) {
-        return html_writer::tag('a', html_writer::tag('span', $target->text, array('class' => 'accesshide')), array('href' => $target->url, 'class' => 'blockmovetarget'));
-    }
-
-
 }
