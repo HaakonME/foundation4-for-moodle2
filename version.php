@@ -19,14 +19,14 @@
  *
  * @package    theme
  * @subpackage foundation
- * @copyright  2011 Petr Skoda  {@link http://skodak.org}
+ * @copyright  2013 Danny Wahl  {@link http://iyware.com}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die;
 
 $plugin->version   = 2013032000; // The current module version (Date: YYYYMMDDXX)
-$plugin->requires  = 2012120303.00; // Requires this Moodle version (2.4.3)
+$plugin->requires  = 2013040500.00; // Requires this Moodle version (2.5beta)
 $plugin->component = 'theme_foundation'; // Full name of the plugin (used for diagnostics)
 $plugin->maturity  = 'MATURITY_ALPHA';
 $plugin->release   = '0.0.1 (Build: 2013032000)';
