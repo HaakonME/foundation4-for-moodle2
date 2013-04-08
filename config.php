@@ -193,8 +193,7 @@ $THEME->javascripts = array(
 );
 
 $THEME->javascripts_footer = array(
-	'foundation/vendor/zepto', // Include zepto OR jquery - not both!
-	//'foundation/vendor/jquery',
+	// 'foundation/vendor/zepto', // We are using Moodle's included jQuery- but zepto is still available if you want...
 	'foundation/foundation.min',
 	'foundation/offcanvas/jquery.offcanvas',
 	'foundation/responsive-tables/responsive-tables',
