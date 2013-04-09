@@ -184,11 +184,11 @@ $THEME->javascripts = array(
 );
 
 $THEME->javascripts_footer = array(
-	'foundation/vendor/zepto', // We are using Moodle's included jQuery- but zepto is still available if you want...
-	'foundation/foundation.min',
-	'foundation/offcanvas/jquery.offcanvas',
-	'foundation/responsive-tables/responsive-tables',
-	'call'
+	'zepto', // We are using Moodle's included jQuery- but zepto is still available if you want...
+	'foundation.min',
+	//'jquery.offcanvas',
+	//'responsive-tables',
+	'theme_foundation_call'
 );
 
 $THEME->rendererfactory = 'theme_overridden_renderer_factory';
