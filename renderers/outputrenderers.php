@@ -404,7 +404,7 @@ class theme_foundation_core_renderer extends core_renderer {
         // Return the sub menu
         return $content;
     }
-    
+
     /**
      * Output the row of editing icons for a block, as defined by the controls array.
      *
@@ -494,21 +494,21 @@ class theme_foundation_core_renderer extends core_renderer {
      * @return string
      */
     protected function block_header(block_contents $bc) {        
-        // Check for a title (if it exists)
+        // Check for an ID (if it exists)
         $blockid = '';
         if ($bc->blockinstanceid) {
             $blockid = 'instance-'.$bc->blockinstanceid.'-header';
         }
 
         // There will always be a title
-        $title = '';
         if ($bc->title) {
-            $title = html_writer::tag('span', $bc->title, array('class'=>'block_action'));
+            $title = $bc->title;
         } elseif ($bc->arialabel) {
-            $title = html_writer::tag('span', $bc->arialabel, array('class'=>'block_action'));
+            $title = $bc->arialabel;
         } else {
-            $title = html_writer::tag('span', '', array('class'=>'block_action'));
+            $title = '';
         }
+        $title = html_writer::tag('span', $title, array('class'=>'block_action'));
 
         $output = '';
         $output = html_writer::tag('header', $title, array('id'=>$blockid, 'class' => 'header title'));
