@@ -43,13 +43,11 @@ $THEME->plugins_exclude_sheets = array(
 );
 
 $THEME->sheets = array(
-    'foundation/foundation',
-    //'offcanvas/offcanvas',
-    //'responsive-tables/responsive-tables'
-    'debug'
+    'zurb_foundation_foundation',
+    'theme_foundation_debug'
 );
 
-$THEME->editor_sheets = array('tinymce/editor');
+$THEME->editor_sheets = array('theme_foundation_editor');
 
 $THEME->layouts = array(
     // Most backwards compatible layout without the blocks - this is the layout used by default
@@ -186,7 +184,7 @@ $THEME->javascripts = array(
 );
 
 $THEME->javascripts_footer = array(
-	// 'foundation/vendor/zepto', // We are using Moodle's included jQuery- but zepto is still available if you want...
+	'foundation/vendor/zepto', // We are using Moodle's included jQuery- but zepto is still available if you want...
 	'foundation/foundation.min',
 	'foundation/offcanvas/jquery.offcanvas',
 	'foundation/responsive-tables/responsive-tables',
