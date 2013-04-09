@@ -35,21 +35,9 @@
 
 $THEME->name = 'foundation';
 
-$THEME->parents = array();
+$THEME->parents = array('base');
 
 $THEME->sheets = array(
-    'moodle/pagelayout',   /** Must come first: Page layout **/
-    'moodle/core',         /** Must come second: General styles **/
-    'moodle/admin',
-    'moodle/blocks',
-    'moodle/calendar',
-    'moodle/course',
-    'moodle/dock',
-    'moodle/grade',
-    'moodle/message',
-    'moodle/question',
-    'moodle/user',
-    'moodle/filemanager',
     'foundation/foundation',
     //'offcanvas/offcanvas',
     //'responsive-tables/responsive-tables'
