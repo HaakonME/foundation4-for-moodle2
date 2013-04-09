@@ -37,6 +37,18 @@ $THEME->name = 'foundation';
 
 $THEME->parents = array('base');
 
+$THEME->parents_exclude_sheets  = array(
+    'base'=>array(
+	    'dock'
+    )
+);
+
+$THEME->plugins_exclude_sheets = array(
+    'block' => array(
+        ''
+    )
+);
+
 $THEME->sheets = array(
     'foundation/foundation',
     //'offcanvas/offcanvas',
