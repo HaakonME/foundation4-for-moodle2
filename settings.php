@@ -15,10 +15,11 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * foundation theme settings page
+ * Theme version info
  *
- * @package    theme_foundation
- * @copyright  2011 Danny Wahl
+ * @package    theme
+ * @subpackage foundation
+ * @copyright  2013 Danny Wahl  {@link http://iyware.com}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 

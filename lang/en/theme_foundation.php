@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -18,9 +17,10 @@
 /**
  * Strings for component 'theme_foundation', language 'en', branch 'MOODLE_25_STABLE'
  *
- * @package   theme_foundation
- * @copyright 1999 onwards Martin Dougiamas  {@link http://moodle.com}
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package    theme
+ * @subpackage foundation
+ * @copyright  2013 Danny Wahl  {@link http://iyware.com}
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 $string['pluginname'] = 'Foundation';
