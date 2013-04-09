@@ -544,6 +544,77 @@ class theme_foundation_core_renderer extends core_renderer {
             $output .= html_writer::tag('footer', $bc->footer, array('class' => 'footer'));
         }
         return $output;
-    }
+    }   
 
+    /**
+     * Internal implementation of single_select rendering
+     *
+     * @param single_select $select
+     * @return string HTML fragment
+     */
+    protected function render_single_select(single_select $select) {
+        $select = clone($select);
+        if (empty($select->formid)) {
+            $select->formid = html_writer::random_id('single_select_f');
+        }
+
+        $output = '';
+        $params = $select->url->params();
+        if ($select->method === 'post') {
+            $params['sesskey'] = sesskey();
+        }
+        foreach ($params as $name=>$value) {
+            $output .= html_writer::empty_tag('input', array('type'=>'hidden', 'name'=>$name, 'value'=>$value));
+        }
+
+        if (empty($select->attributes['id'])) {
+            $select->attributes['id'] = html_writer::random_id('single_select');
+        }
+
+        if ($select->disabled) {
+            $select->attributes['disabled'] = 'disabled';
+        }
+
+        if ($select->tooltip) {
+            $select->attributes['title'] = $select->tooltip;
+        }
+
+        $select->attributes['class'] = 'autosubmit';
+        if ($select->class) {
+            $select->attributes['class'] .= ' ' . $select->class;
+        }
+
+        if ($select->label) {
+            $output .= html_writer::label($select->label, $select->attributes['id'], false, $select->labelattributes);
+        }
+
+        if ($select->helpicon instanceof help_icon) {
+            $output .= $this->render($select->helpicon);
+        }
+        $output .= html_writer::select($select->options, $select->name, $select->selected, $select->nothing, $select->attributes);
+
+        $go = html_writer::empty_tag('input', array('type'=>'submit', 'value'=>get_string('go')));
+        $output .= html_writer::tag('noscript', html_writer::tag('div', $go), array('class' => 'inline'));
+
+        $nothing = empty($select->nothing) ? false : key($select->nothing);
+        $this->page->requires->yui_module('moodle-core-formautosubmit',
+            'M.core.init_formautosubmit',
+            array(array('selectid' => $select->attributes['id'], 'nothing' => $nothing))
+        );
+
+        // now the form itself around it
+        if ($select->method === 'get') {
+            $url = $select->url->out_omit_querystring(true); // url without params, the anchor part allowed
+        } else {
+            $url = $select->url->out_omit_querystring();     // url without params, the anchor part not allowed
+        }
+        $formattributes = array('method' => $select->method,
+                                'action' => $url,
+                                'id'     => $select->formid,
+                                'class'  => 'custom');
+        $output = html_writer::tag('form', $output, $formattributes);
+
+        // and finally one more wrapper with class
+        return html_writer::tag('div', $output, array('class' => $select->class));
+    }
 }
