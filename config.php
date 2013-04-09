@@ -43,7 +43,7 @@ $THEME->plugins_exclude_sheets = array(
 );
 
 $THEME->sheets = array(
-    'zurb_foundation_foundation',
+    'foundation',
     'theme_foundation_debug'
 );
 
